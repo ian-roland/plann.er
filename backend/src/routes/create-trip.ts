@@ -1,12 +1,12 @@
+import 'dayjs/locale/pt-br';
+import localizedFormat from 'dayjs/plugin/localizedFormat';
 import { FastifyInstance } from "fastify";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
-import dayjs from 'dayjs'
-import localizedFormat from 'dayjs/plugin/localizedFormat'
-import 'dayjs/locale/pt-br'
-import nodemailer from 'nodemailer'
-import { z } from 'zod'
-import { prisma } from "../lib/prisma";
+import nodemailer from 'nodemailer';
+import { z } from 'zod';
+import { dayjs } from '../lib/dayjs';
 import { getMailClient } from "../lib/mail";
+import { prisma } from "../lib/prisma";
 
 dayjs.locale('pt-br')
 dayjs.extend(localizedFormat); 
@@ -43,27 +43,31 @@ export async function createTrip(app: FastifyInstance) {
 
         const trip = await prisma.trip.create({
             data: {
-                destination,
-                starts_at,
-                ends_at,
-                participants: {
-                    createMany:{
-                        data: {
-                            name: owner_name,
-                            email: owner_email,
-                            is_owner: true,
-                            is_confirmed: true,
-                        },
-                        ...emails_to_invite.map(email => { return { email }})
-                    }
-                }
-            }
-        })
+              destination,
+              starts_at,
+              ends_at,
+              participants: {
+                createMany: {
+                  data: [
+                    {
+                      name: owner_name,
+                      email: owner_email,
+                      is_owner: true,
+                      is_confirmed: true,
+                    },
+                    ...emails_to_invite.map((email) => {
+                      return { email }
+                    }),
+                  ],
+                },
+              },
+            },
+          })
 
         const formattedStartDate = dayjs(starts_at).format('LL')
         const formattedEndDate = dayjs(ends_at).format('LL')
 
-        const confirmationLink = `http://localhost:3333/trips/${trip.d}/confirm`
+        const confirmationLink = `http://localhost:3333/trips/${trip.id}/confirm`
 
         const mail = await getMailClient()
 
