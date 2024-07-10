@@ -6,9 +6,9 @@ import { prisma } from '../lib/prisma'
 import { ClientError } from "../errors/client-error";
 
 
-export async function getActivities(app: FastifyInstance) {
+export async function getParticipants(app: FastifyInstance) {
     app.withTypeProvider<ZodTypeProvider>().get(
-        '/trips/:tripId/activities',
+        '/trips/:tripId/participants',
         {
           schema: {
             params: z.object({
@@ -24,9 +24,12 @@ export async function getActivities(app: FastifyInstance) {
         const trip = await prisma.trip.findUnique({
             where: { id: tripId },
             include: { 
-                activities: {
-                    orderBy: {
-                       occurs_at: 'asc', 
+                participants: {
+                    select: {
+                        id: true,
+                        name: true,
+                        email: true,
+                        is_confirmed: true,
                     }
                 }
             },
@@ -36,20 +39,7 @@ export async function getActivities(app: FastifyInstance) {
             throw new ClientError('Trip not found.')
         }
 
-        const differenceInDaysBetweenTripStartAndEnd = dayjs(trip.ends_at).diff(trip.starts_at, 'days')
-
-        const activities = Array.from( { length : differenceInDaysBetweenTripStartAndEnd + 1 } ).map((_ , index) => {
-            const date = dayjs(trip.starts_at).add(index, 'days')
-
-            return {
-                date: date.toDate(),
-                    activities: trip.activities.filter(activity => {
-                        return dayjs(activity.occurs_at).isSame(date, 'day')
-                    })
-            }
-        })
-
-        return { activities }
+        return { participants: trip.participants }
 
     })
 }
