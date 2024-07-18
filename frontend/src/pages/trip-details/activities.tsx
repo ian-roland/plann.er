@@ -1,18 +1,46 @@
-import { CircleCheck } from "lucide-react";
+import { Activity, CircleCheck } from "lucide-react";
+import { useEffect, useState } from "react";
+import { api } from "../../lib/axios";
+import { useParams } from "react-router-dom";
+import { format } from "date-fns";
+
+interface Activity {
+    date: string
+    activities: {
+        id: string
+        title: string
+        occurs_at: string
+    }[]
+}
 
 export function Activities() {
+
+    const { tripId } = useParams()
+    const [activities, setActivities] = useState<Activity[]>([])
+
+    useEffect(() => {
+        api.get(`/trips/${tripId}/activities`).then(response => setActivities(response.data.activities))
+    }, [tripId])
+
     return (
         <div className="space-y-8">
-            <div className="space-y-2.5">
-                <div className="flex gap-2 items-baseline">
-                    <span className="text-xl text-zinc-300 font-semibold">Dia 17</span>
-                    <span className="text-xs text-zinc-500">Sábado</span>
-                </div>
-                <p className="text-zinc-500 text-sm">
-                    Nenhuma atividade cadastrada nessa data.
-                </p>
+            {activities.map(activity => {
+                return (
+                    <div key={activity.date} className="space-y-2.5">
+                        <div className="flex gap-2 items-baseline">
+                            <span className="text-xl text-zinc-300 font-semibold">Dia {format(activity.date, 'd')}</span>
+                            <span className="text-xs text-zinc-500">Sábado</span>
+                        </div>
+                        <p className="text-zinc-500 text-sm">
+                            Nenhuma atividade cadastrada nessa data.
+                        </p>
 
-            </div>
+                    </div>
+                )
+            })}
+
+
+
 
             <div className="space-y-2.5">
                 <div className="flex gap-2 items-baseline">
