@@ -13,7 +13,7 @@ export function CreateActivityModal({
 }: CreateActivityModalProps) {
 
     const { tripId } = useParams()
-
+    
 
     async function createActivity(event: FormEvent<HTMLFormElement>) {
         event.preventDefault()
@@ -28,7 +28,7 @@ export function CreateActivityModal({
             occurs_at,
         })
 
-        closeCreateActivityModal
+        window.document.location.reload()
 
     }
 
