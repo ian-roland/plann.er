@@ -7,5 +7,13 @@
 }
 
 input {
-    color-scheme: dark
+    /*color-scheme: dark*/
 }
+
+:root {
+    
+    --rdp-range_start-background: #84cc16;
+    --rdp-range_middle-background-color: #84cc16;
+    --rdp-range_end-background: #84cc16;
+
+  }
