@@ -4,6 +4,10 @@ Plann.er is a webapp focused on planning trips with your friends and inviting th
 
 Plann.er é um webapp com foco em planejar viagens com seus amigos e convida-los via e-mail, esse projeto foi desenvolvido durante o evento online Next Level Week sediado pela Rockseat, todos os direitos reservados a eles.
 
+<div align="center">
+<img src="https://github.com/user-attachments/assets/b1586d6c-82a0-4d35-a751-e16858286f1e" width="800" align="center" />
+</div>
+
 ## Reference Sheet 📑
 
 - [Figma](https://www.figma.com/community/file/1392276515495389646)
